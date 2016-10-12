@@ -1,0 +1,47 @@
+{#
+/**
+ * @file location-data.html.twig
+ * Default theme implementation to present Store locator data.
+ *
+ * This template is used when viewing Store locator pages.
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_store_locator()
+ *
+ * @ingroup themeable
+ */
+#}
+<h1>{{ page_title }}</h1>
+{% if empty_data is not empty %}
+    <div class="empty-store">{{ empty_data }}</div>
+
+{% else %}
+
+    <div class="search-test-field">{{ searchField }}</div>
+
+    <div id="location-wrapper bh-sl-map-container" class="bh-sl-map-container">
+
+        <div id="location-list-wrapper" class="bh-sl-loc-list">
+            <ul class="list-wrapper list">
+
+                {% for items in location_list %}
+                    <li data-markerid="{{ loop.index0 }}" class="list-marker-id">
+                        <div class="list-details">
+                            <div class="list-content">
+                                {% for key, value in items %}
+                                    <div class="loc-{{ key }}">{{- value|striptags -}}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="map" class="bh-sl-map"></div>
+    </div>
+{% endif %}
+

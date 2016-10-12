@@ -1,0 +1,12 @@
+# A simple script yo load the map.
+store_locator.page:
+js:
+js/store_locator_map.js: {}
+# Build up our dependencies for this page as a library.
+css:
+component:
+css/store-locator.css: {}
+dependencies:
+- core/jquery
+- core/drupal.ajax
+- core/drupalSettings

@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Install, uninstall functions for the store_locator module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Creates default settings for drupal config table.
+ *
+ * @see hook_install()
+ *
+ * @ingroup store_locator
+ */
+function store_locator_install() {
+  // Add a default entry.
+  $setvalue = array(
+        'name' => array('name' => 1, 'weight' => 1),
+        'city' => array('city' => 0, 'weight' => 0),
+        'address_one' => array('address_one' => 0, 'weight' => 0),
+        'address_two' => array('address_two' => 0, 'weight' => 0),
+        'postcode' => array('postcode' => 0, 'weight' => 0),
+        'website' => array('website' => 0, 'weight' => 0),
+        'logo' => array('logo' => 0, 'weight' => 0),
+    );
+
+  \Drupal::configFactory()->getEditable('store_locator.settings')
+    ->set('infowindow', $setvalue)
+    ->save();
+  \Drupal::configFactory()->getEditable('store_locator.settings')
+    ->set('list', $setvalue)
+    ->save();
+  \Drupal::configFactory()->getEditable('store_locator.settings')
+    ->set('title', t('Store Locator'))
+    ->save();
+  \Drupal::configFactory()->getEditable('store_locator.settings')
+    ->set('message', t('No Store Locator Record Found.'))
+    ->save();
+  \Drupal::configFactory()->getEditable('store_locator.settings')
+    ->set('logo_style', 'thumbnail')
+    ->save();
+}

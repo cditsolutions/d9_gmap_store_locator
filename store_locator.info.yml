@@ -1,0 +1,5 @@
+name: Store Locator
+type: module
+description: Store Locator with Google Map
+package: Google Map
+core: 8.x
