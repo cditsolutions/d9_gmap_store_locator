@@ -15,9 +15,7 @@ use Symfony\Component\Routing\Route;
 class StoreLocatorHtmlRouteProvider extends AdminHtmlRouteProvider {
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   public function getRoutes(EntityTypeInterface $entity_type) {
     $collection = parent::getRoutes($entity_type);
@@ -41,7 +39,8 @@ class StoreLocatorHtmlRouteProvider extends AdminHtmlRouteProvider {
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *          The entity type.
    *
-   * @return \Symfony\Component\Routing\Route|null The generated route, if available.
+   * @return route
+   *   \Symfony\Component\Routing\Route|null The generated route, if available.
    */
   protected function getCollectionRoute(EntityTypeInterface $entity_type) {
     if ($entity_type->hasLinkTemplate('collection') && $entity_type->hasListBuilderClass()) {
@@ -49,7 +48,8 @@ class StoreLocatorHtmlRouteProvider extends AdminHtmlRouteProvider {
       $route = new Route($entity_type->getLinkTemplate('collection'));
       $route->setDefaults([
         '_entity_list' => $entity_type_id,
-        '_title' => "{$entity_type->getLabel()} list"])->setRequirement('_permission', 'view store locator entities')->setOption('_admin_route', TRUE);
+        '_title' => "{$entity_type->getLabel()} list",
+      ])->setRequirement('_permission', 'view store locator entities')->setOption('_admin_route', TRUE);
 
       return $route;
     }
@@ -61,14 +61,16 @@ class StoreLocatorHtmlRouteProvider extends AdminHtmlRouteProvider {
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *          The entity type.
    *
-   * @return \Symfony\Component\Routing\Route|null The generated route, if available.
+   * @return route
+   *   \Symfony\Component\Routing\Route|null The generated route, if available.
    */
   protected function getSettingsFormRoute(EntityTypeInterface $entity_type) {
     if (!$entity_type->getBundleEntityType()) {
       $route = new Route("/admin/structure/{$entity_type->id()}/settings");
       $route->setDefaults([
         '_form' => 'Drupal\store_locator\Form\StoreLocatorSettingsForm',
-        '_title' => "{$entity_type->getLabel()} settings"])->setRequirement('_permission', $entity_type->getAdminPermission())->setOption('_admin_route', TRUE);
+        '_title' => "{$entity_type->getLabel()} settings",
+      ])->setRequirement('_permission', $entity_type->getAdminPermission())->setOption('_admin_route', TRUE);
 
       return $route;
     }

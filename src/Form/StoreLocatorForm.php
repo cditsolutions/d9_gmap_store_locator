@@ -8,7 +8,6 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\AlertCommand;
 use Drupal\store_locator\Geocode\GeostoreConsumer;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Form controller for Store locator edit forms.
@@ -18,27 +17,26 @@ use Symfony\Component\HttpFoundation\Request;
 class StoreLocatorForm extends ContentEntityForm {
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /* @var $entity \Drupal\store_locator\Entity\StoreLocator */
     $form = parent::buildForm($form, $form_state);
-    $entity = $this->entity;
     $form['add'] = [
       '#type' => 'button',
       '#value' => $this->t('Calculate Lat/Long'),
       '#ajax' => [
         'callback' => '::ajaxContentSubmitForm',
-        'event' => 'click'],
+        'event' => 'click',
+      ],
       '#prefix' => '<div id="add-button-wrapper">',
-      '#suffix' => '</div>'];
+      '#suffix' => '</div>',
+    ];
     $form['gmap'] = array(
       '#type' => 'container',
       '#weight' => 90,
       '#prefix' => '<div id="map">',
-      '#suffix' => '</div>');
+      '#suffix' => '</div>',
+    );
     $lat = $form['latitude']['widget'][0]['value']['#default_value'];
     $lng = $form['longitude']['widget'][0]['value']['#default_value'];
     if (!empty($lat) || !empty($lng)) {
@@ -53,26 +51,27 @@ class StoreLocatorForm extends ContentEntityForm {
   }
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
     $status = parent::save($form, $form_state);
 
     switch ($status) {
-      case SAVED_NEW :
+      case SAVED_NEW:
         drupal_set_message($this->t('Created the %label Store locator.', [
-              '%label' => $entity->label()]));
+          '%label' => $entity->label(),
+        ]));
         break;
 
-      default :
+      default:
         drupal_set_message($this->t('Saved the %label Store locator.', [
-              '%label' => $entity->label()]));
+          '%label' => $entity->label(),
+        ]));
     }
     $form_state->setRedirect('entity.store_locator.canonical', [
-      'store_locator' => $entity->id()]);
+      'store_locator' => $entity->id(),
+    ]);
   }
 
   /**
@@ -95,12 +94,15 @@ class StoreLocatorForm extends ContentEntityForm {
     $data = GeostoreConsumer::geoLatLong($address);
 
     $response->addCommand(new InvokeCommand("input[name='latitude[0][value]']", 'val', array(
-      $data['latitude'])));
+      $data['latitude'],
+    )));
     $response->addCommand(new InvokeCommand("input[name='longitude[0][value]']", 'val', array(
-      $data['longitude'])));
+      $data['longitude'],
+    )));
     $response->addCommand(new InvokeCommand('', 'init_map', array(
       $data['latitude'],
-      $data['longitude'])));
+      $data['longitude'],
+    )));
 
     return $response;
   }

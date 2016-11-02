@@ -2,8 +2,11 @@
 
 /**
  * @file
- * Contains store_locator.module..
+ * Contains store_locator.module.
  */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\store_locator\StoreLocatorStorage;
 
 /**
@@ -11,7 +14,8 @@ use Drupal\store_locator\StoreLocatorStorage;
  */
 function store_locator_theme($existing, $type, $theme, $path) {
   return array(
-    'location_data' => array('variables' => array('location_data_var' => NULL)));
+    'location_data' => array('variables' => array('location_data_var' => NULL)),
+  );
 }
 
 /**
@@ -21,7 +25,7 @@ function template_preprocess_location_data(&$variables) {
   $variables['empty_data'] = '';
   $variables['page_title'] = \Drupal::config('store_locator.settings')->get('title');
   $list_data = StoreLocatorStorage::loadInfowindow('list');
-  if(is_array($list_data['itemlist']) && !empty($list_data['itemlist'])) {
+  if (is_array($list_data['itemlist']) && !empty($list_data['itemlist'])) {
     $location_data = StoreLocatorStorage::loadInfowindow('infowindow');
     $search_field = $variables['location_data_var']['searchitem'];
     $variables['location_list'] = $list_data['itemlist'];
@@ -29,30 +33,34 @@ function template_preprocess_location_data(&$variables) {
     $variables['#attached']['drupalSettings']['store_locator']['data'] = $location_data['itemlist'];
     $variables['#attached']['drupalSettings']['store_locator']['markericon'] = $location_data['marker'];
     $variables['#attached']['library'][] = 'store_locator/store_locator.page';
-  } else {
+  }
+  else {
     $variables['empty_data'] = \Drupal::config('store_locator.settings')->get('message');
   }
 }
 
 /**
- * Implements hook_page_attachments().
  * Append the Configured Google Map API key in script tag.
+ *
+ * Implements hook_page_attachments()
  */
 function store_locator_page_attachments(array &$page) {
   $api_key = \Drupal::config('store_locator.settings')->get('api_key');
   $mapKey = array(
-    '#tag' => 'script', 
+    '#tag' => 'script',
     '#attributes' => array(
-      'src' => '//maps.googleapis.com/maps/api/js?key=' . $api_key));
+      'src' => '//maps.googleapis.com/maps/api/js?key=' . $api_key,
+    ),
+  );
   $page['#attached']['html_head'][] = [$mapKey, 'mapKey'];
 }
 
 /**
  * Implements hook_entity_view_alter().
  */
-function store_locator_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
+function store_locator_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   if ($build['#view_mode'] == 'full') {
-    
+
     $lat = $build['name']['#object']->get('latitude')->value;
     $lng = $build['name']['#object']->get('longitude')->value;
     $lat_lng = array('lat' => (float) $lat, 'lng' => (float) $lng);

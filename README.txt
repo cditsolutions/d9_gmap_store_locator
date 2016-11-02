@@ -1,6 +1,6 @@
 SUMMARY - Store Locator
 ========================
-The Store Locator module provides a simple way to add the stores and display them
+Store Locator module provides a simple way to add the stores and display them
 in google map with configurable InfoWindow & List.
 
 
@@ -19,10 +19,11 @@ USAGE
 -------
 To use this module create store entity pages with configurable options:
 
-* Add items in /store_locator/add page
-* Click on the 'Calculate Lat/Long' to get the Latitude & Longitude of the entered fields or click on the map to auto generate latitude & longitude.
+* Add items in /store_locator/add page.
+* Click on the 'Calculate Lat/Long' to get the Latitude & Longitude of the 
+entered fields or click on the map to auto generate latitude & longitude.
 * View the Store Locator page at /store-locator.
-* You can also add the 'Store Locator' block anywhere by visiting /admin/structure/block
+* Place the 'Store Locator' block anywhere by visiting /admin/structure/block.
 
 
 CONFIGURATION
@@ -30,14 +31,16 @@ CONFIGURATION
 Global module settings can be found at /admin/config/store_locator/settings.
 
  * Upload Marker Icon to display the marker on the map.
- * Generate Google Map API key and add it (Reference: https://developers.google.com/maps/documentation/javascript/get-api-key)
+ * Generate Google Map API key and add it.
+  https://developers.google.com/maps/documentation/javascript/get-api-key
  * Items Visibility in List & Infowindow with sort option.
 
-Entity Settings & List Page.
- * Store Locator Entity Administration page /admin/structure/store_locator/settings
- * Store Locator List page /store_locator/list
+Entity Settings & List Page:
+ * Store Locator Administration page /admin/structure/store_locator/settings.
+ * Store Locator List page /store_locator/list.
 
 SUPPORT
 --------
 Please use the issue queue to report bugs or request support:
 http://drupal.org/project/issues/storelocator
+https://www.drupal.org/u/vedprakash

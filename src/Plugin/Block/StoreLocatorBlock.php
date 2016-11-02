@@ -16,9 +16,7 @@ use Drupal\store_locator\StoreLocatorStorage;
 class StoreLocatorBlock extends BlockBase {
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   public function build() {
     $content = array();
@@ -30,4 +28,5 @@ class StoreLocatorBlock extends BlockBase {
 
     return $content;
   }
+
 }

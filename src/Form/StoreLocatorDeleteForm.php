@@ -10,5 +10,5 @@ use Drupal\Core\Entity\ContentEntityDeleteForm;
  * @ingroup store_locator
  */
 class StoreLocatorDeleteForm extends ContentEntityDeleteForm {
-  
+
 }

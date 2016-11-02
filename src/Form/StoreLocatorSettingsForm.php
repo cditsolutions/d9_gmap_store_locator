@@ -10,14 +10,15 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @package Drupal\store_locator\Form
  *
- *          @ingroup store_locator
+ * @ingroup store_locator
  */
 class StoreLocatorSettingsForm extends FormBase {
 
   /**
    * Returns a unique string identifying the form.
    *
-   * @return string The unique string identifying the form.
+   * @return string
+   *   The unique string identifying the form.
    */
   public function getFormId() {
     return 'StoreLocator_settings';
@@ -43,7 +44,8 @@ class StoreLocatorSettingsForm extends FormBase {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *          The current state of the form.
    *
-   * @return array Form definition array.
+   * @return array
+   *   Form definition array.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['StoreLocator_settings']['#markup'] = 'Settings form for Store locator entities. Manage field settings here.';

@@ -2,23 +2,25 @@
 
 namespace Drupal\store_locator;
 
-use Drupal\Core\Field;
+use Drupal\Core\Url;
+use Drupal\image\Entity\ImageStyle;
 use Drupal\file\Entity\File;
 
 /**
  * Class StoreLocatorStorage.
  */
 class StoreLocatorStorage {
-  /*
+
+  /**
+   * Get the fields from database.
+   *
    * @param array $items
-   * An array containing all the fields used to search the entries in the
-   * 'store_locator' table.
+   *   An array containing all the fields used to search the entries in the
+   *   'store_locator' table.
    *
    * @return object
-   * An object containing the loaded entries if found.
-   *
+   *   An object containing the loaded entries if found.
    */
-
   public static function getAvailableFields($items = array()) {
     $entity_type = $bundle = 'store_locator';
     $get_list = \Drupal::entityManager()->getFieldDefinitions($entity_type, $bundle);
@@ -48,7 +50,8 @@ class StoreLocatorStorage {
         'latitude',
         'longitude',
         'created',
-        'changed');
+        'changed',
+      );
       foreach ($get_list as $key => $value) {
         if (!in_array($key, $filter_items)) {
           $available_fields[$key][$key] = $value->getLabel();
@@ -59,12 +62,14 @@ class StoreLocatorStorage {
   }
 
   /**
+   * Load the data in list & infowindow.
+   *
    * @param array $type
-   * Available types 'infowindow' & 'list'
-   * Get all the associated values from the 'store_locator' table.
+   *   Available types 'infowindow' & 'list'
+   *   Get all the associated values from the 'store_locator' table.
    *
-   * @return object An object containing the field information.
-   *
+   * @return object
+   *   An object containing the field information.
    */
   public static function loadInfowindow($type = NULL) {
     $location_data = $item_list = $filter_array = array();
@@ -92,7 +97,7 @@ class StoreLocatorStorage {
         if (!empty($value->get('logo')->target_id)) {
           $file = File::load($value->get('logo')->target_id);
           $style = \Drupal::config('store_locator.settings')->get('logo_style');
-          $file_path = \Drupal\image\Entity\ImageStyle::load($style)->buildUrl($file->getFileUri());
+          $file_path = ImageStyle::load($style)->buildUrl($file->getFileUri());
           $location_data['logo'] = '<img src="' . $file_path . '">';
         }
         $location_data['latitude'] = $value->get('latitude')->value;
@@ -120,23 +125,25 @@ class StoreLocatorStorage {
       if (!empty($fid)) {
         $file = File::load($fid);
         $path = $file->getFileUri();
-        $marker_path = \Drupal\Core\Url::fromUri(file_create_url($path))->toString();
+        $marker_path = Url::fromUri(file_create_url($path))->toString();
         $marker = array('icon' => $marker_path);
       }
     }
 
     return ($type == 'infowindow') ? array(
       'marker' => array('icon' => $marker),
-      'itemlist' => $item_list) : array('itemlist' => $item_list);
+      'itemlist' => $item_list,
+    ) : array('itemlist' => $item_list);
   }
 
   /**
+   * Get the Available Image Style.
    *
-   * @return An array containing the available image styles..
-   *
+   * @return array
+   *   Containing the available image styles.
    */
   public static function getAvailableStyle() {
-    $styles = \Drupal\image\Entity\ImageStyle::loadMultiple();
+    $styles = ImageStyle::loadMultiple();
     $available_style = array();
     foreach ($styles as $key => $val) {
       $available_style[$val->get('name')] = $val->get('label');

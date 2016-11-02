@@ -2,7 +2,6 @@
 
 namespace Drupal\store_locator\Geocode;
 
-use GuzzleHttp\ClientInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -13,10 +12,11 @@ class GeostoreConsumer {
   /**
    * Return json data of latitude & longitude.
    *
-   * @param string $text
-   *          The text query to get the latitude & longitude.
+   * @param string $address
+   *          The address query to get the latitude & longitude.
    *
-   * @return array An array of latitude & longitude.
+   * @return array
+   *   An array of latitude & longitude.
    */
   public function geoLatLong($address) {
     $client = \Drupal::httpClient();

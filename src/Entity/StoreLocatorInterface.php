@@ -12,12 +12,12 @@ use Drupal\user\EntityOwnerInterface;
  * @ingroup store_locator
  */
 interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInterface, EntityOwnerInterface {
-  // Add get/set methods for your configuration properties here.
 
   /**
    * Gets the Store locator name.
    *
-   * @return string Name of the Store locator.
+   * @return string
+   *   Name of the Store locator.
    */
   public function getName();
 
@@ -27,14 +27,17 @@ interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInt
    * @param string $name
    *          The Store locator name.
    *
-   * @return \Drupal\store_locator\Entity\StoreLocatorInterface The called Store locator entity.
+   * @return string
+   *   \Drupal\store_locator\Entity\StoreLocatorInterface called
+   *   Store locator entity.
    */
   public function setName($name);
 
   /**
    * Gets the Store locator creation timestamp.
    *
-   * @return int Creation timestamp of the Store locator.
+   * @return int
+   *   Creation timestamp of the Store locator.
    */
   public function getCreatedTime();
 
@@ -44,7 +47,9 @@ interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInt
    * @param int $timestamp
    *          The Store locator creation timestamp.
    *
-   * @return \Drupal\store_locator\Entity\StoreLocatorInterface The called Store locator entity.
+   * @return string
+   *   \Drupal\store_locator\Entity\StoreLocatorInterface
+   *   called Store locator entity.
    */
   public function setCreatedTime($timestamp);
 
@@ -53,7 +58,8 @@ interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInt
    *
    * Unpublished Store locator are only visible to restricted users.
    *
-   * @return bool TRUE if the Store locator is published.
+   * @return bool
+   *   TRUE if the Store locator is published.
    */
   public function isPublished();
 
@@ -61,9 +67,13 @@ interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInt
    * Sets the published status of a Store locator.
    *
    * @param bool $published
-   *          TRUE to set this Store locator to published, FALSE to set it to unpublished.
+   *          TRUE to set this Store locator to published,
+   *          FALSE to set it to unpublished.
    *
-   * @return \Drupal\store_locator\Entity\StoreLocatorInterface The called Store locator entity.
+   * @return string
+   *   \Drupal\store_locator\Entity\StoreLocatorInterface
+   *   Called Store locator entity.
    */
   public function setPublished($published);
+
 }

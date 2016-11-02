@@ -18,11 +18,14 @@ class StoreLocatorPage extends ControllerBase {
       '#type' => 'textfield',
       '#attributes' => array(
         'onkeyup' => "filter(this);",
-        'placeholder' => t('Search keyword'))];
+        'placeholder' => t('Search keyword'),
+      ),
+    ];
     // Preprocesses the Results.
     return $output = array(
       '#theme' => 'location_data',
-      '#location_data_var' => $content);
+      '#location_data_var' => $content,
+    );
   }
 
 }

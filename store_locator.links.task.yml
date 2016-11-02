@@ -19,4 +19,3 @@ entity.store_locator.delete_form:
   base_route:  entity.store_locator.canonical
   title: Delete
   weight: 10
-

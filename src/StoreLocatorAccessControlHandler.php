@@ -15,25 +15,20 @@ use Drupal\Core\Access\AccessResult;
 class StoreLocatorAccessControlHandler extends EntityAccessControlHandler {
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    /**
-     * @var \Drupal\store_locator\Entity\StoreLocatorInterface $entity
-     */
     switch ($operation) {
-      case 'view' :
+      case 'view':
         if (!$entity->isPublished()) {
           return AccessResult::allowedIfHasPermission($account, 'view unpublished store locator entities');
         }
         return AccessResult::allowedIfHasPermission($account, 'view published store locator entities');
 
-      case 'update' :
+      case 'update':
         return AccessResult::allowedIfHasPermission($account, 'edit store locator entities');
 
-      case 'delete' :
+      case 'delete':
         return AccessResult::allowedIfHasPermission($account, 'delete store locator entities');
     }
 
@@ -42,9 +37,7 @@ class StoreLocatorAccessControlHandler extends EntityAccessControlHandler {
   }
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
     return AccessResult::allowedIfHasPermission($account, 'add store locator entities');

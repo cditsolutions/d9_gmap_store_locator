@@ -17,9 +17,7 @@ class StoreLocatorListBuilder extends EntityListBuilder {
   use LinkGeneratorTrait;
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   public function buildHeader() {
     $header['name'] = $this->t('Store Name');
@@ -30,14 +28,13 @@ class StoreLocatorListBuilder extends EntityListBuilder {
   }
 
   /**
-   *
    * {@inheritdoc}
-   *
    */
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\store_locator\Entity\StoreLocator */
     $row['name'] = $this->l($entity->label(), new Url('entity.store_locator.canonical', array(
-      'store_locator' => $entity->id())));
+      'store_locator' => $entity->id(),
+    )));
     $row['city'] = $entity->get('city')->value;
     $row['address'] = $entity->get('address_one')->value . ', ' . $entity->get('address_two')->value;
     $row['postcode'] = $entity->get('postcode')->value;
