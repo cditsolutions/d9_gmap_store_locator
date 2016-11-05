@@ -47,7 +47,7 @@ class SettingsForm extends ConfigFormBase {
     $form['marker']['icon'] = array(
       '#type' => 'managed_file',
       '#title' => $this->t('Marker Icon'),
-      '#description' => t('Supported formats are: gif png jpg jpeg'),
+      '#description' => $this->t('Supported formats are: gif png jpg jpeg'),
       '#upload_validators' => array(
         'file_validate_extensions' => array('gif png jpg jpeg'),
         'file_validate_size' => array(500000),
@@ -58,19 +58,19 @@ class SettingsForm extends ConfigFormBase {
 
     $form['marker']['width'] = array(
       '#type' => 'textfield',
-      '#title' => t('Max Width'),
+      '#title' => $this->t('Max Width'),
       '#size' => 10,
       '#maxlength' => 3,
       '#default_value' => !empty($config->get('marker_width')) ? $config->get('marker_width') : '25',
-      '#description' => t('Enter the width in <em>px</em>'),
+      '#description' => $this->t('Enter the width in <em>px</em>'),
     );
     $form['marker']['height'] = array(
       '#type' => 'textfield',
-      '#title' => t('Max Height'),
+      '#title' => $this->t('Max Height'),
       '#size' => 10,
       '#maxlength' => 3,
       '#default_value' => !empty($config->get('marker_height')) ? $config->get('marker_height') : '35',
-      '#description' => t('Enter the height in <em>px</em>'),
+      '#description' => $this->t('Enter the height in <em>px</em>'),
     );
 
     $form['map_api'] = array(
@@ -80,11 +80,11 @@ class SettingsForm extends ConfigFormBase {
     );
     $form['map_api']['api_key'] = array(
       '#type' => 'textfield',
-      '#title' => t('Google Maps API Key'),
+      '#title' => $this->t('Google Maps API Key'),
       '#size' => 60,
       '#required' => TRUE,
       '#default_value' => $config->get('api_key'),
-      '#description' => t('A free API key is needed to use the Google Maps. @click here to generate the API key', array(
+      '#description' => $this->t('A free API key is needed to use the Google Maps. @click here to generate the API key', array(
         '@click' => \Drupal::l(t('Click here'), $google_api),
       )),
     );
@@ -98,20 +98,20 @@ class SettingsForm extends ConfigFormBase {
     );
     $form['message']['store_label'] = array(
       '#type' => 'textfield',
-      '#title' => t('Locator Title'),
+      '#title' => $this->t('Locator Title'),
       '#size' => 60,
       '#maxlength' => 255,
       '#required' => TRUE,
       '#default_value' => $config->get('title'),
-      '#description' => t('Title will be display in <em>store-locator</em> page.'),
+      '#description' => $this->t('Title will be display in <em>store-locator</em> page.'),
     );
     $form['message']['store_text'] = array(
       '#type' => 'textarea',
-      '#title' => t('No Record Message'),
+      '#title' => $this->t('No Record Message'),
       '#rows' => 3,
       '#required' => TRUE,
       '#default_value' => $config->get('message'),
-      '#description' => t('Message will be diplay when no record added in store locator page.'),
+      '#description' => $this->t('Message will be diplay when no record added in store locator page.'),
     );
 
     $form['style'] = array(
@@ -121,10 +121,10 @@ class SettingsForm extends ConfigFormBase {
     );
     $form['style']['logo'] = array(
       '#type' => 'select',
-      '#title' => t('Available Styles'),
+      '#title' => $this->t('Available Styles'),
       '#options' => StoreLocatorStorage::getAvailableStyle(),
       '#default_value' => !empty($config->get('logo_style')) ? $config->get('logo_style') : 'thumbnail',
-      '#description' => t('Select logo style to apply in map infowindow'),
+      '#description' => $this->t('Select logo style to apply in map infowindow'),
     );
 
     return parent::buildForm($form, $form_state);
@@ -159,7 +159,11 @@ class SettingsForm extends ConfigFormBase {
     );
     $form[$type][$field_name] = array(
       '#type' => 'table',
-      '#header' => array(t('Order'), t('Status'), t('Weight')),
+      '#header' => array(
+        $this->t('Order'),
+        $this->t('Status'),
+        $this->t('Weight'),
+      ),
       '#tableselect' => FALSE,
       '#tabledrag' => array(
         array(

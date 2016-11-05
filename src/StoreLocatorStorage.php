@@ -82,7 +82,7 @@ class StoreLocatorStorage {
     $extra_field_type = array('email', 'telephone');
     $api_key = \Drupal::config('store_locator.settings')->get($type);
 
-    foreach ($results as $key => $value) {
+    foreach ($results as $value) {
       foreach ($api_key as $k => $v) {
         if ($v[$k] == 0) {
           unset($api_key[$k]);
@@ -145,8 +145,8 @@ class StoreLocatorStorage {
   public static function getAvailableStyle() {
     $styles = ImageStyle::loadMultiple();
     $available_style = array();
-    foreach ($styles as $key => $val) {
-      $available_style[$val->get('name')] = $val->get('label');
+    foreach ($styles as $value) {
+      $available_style[$value->get('name')] = $value->get('label');
     }
     return $available_style;
   }
