@@ -38,7 +38,6 @@
       mapOptions);
       map.setTilt(45);
       var infoWindow = new google.maps.InfoWindow();
-      //key;
       jQuery(this);
       jQuery.each(
       data,
@@ -60,8 +59,8 @@
         gmarker,
           'click', (function (gmarker, index) {
             return function () {
-            content = '';
-            jQuery.each(
+              content = '';
+              jQuery.each(
             marker,
 
             function (
@@ -79,29 +78,29 @@
               }
             });
 
-            infoWindow.setContent(content);
-            infoWindow.open(map, gmarker);
+              infoWindow.setContent(content);
+              infoWindow.open(map, gmarker);
 
-            jQuery(
+              jQuery(
               '.list-wrapper li')
               .removeClass(
               'highlight');
-            jQuery(
+              jQuery(
               '.list-wrapper li')
               .eq(index)
               .addClass(
               'highlight');
 
-            var container = jQuery('#location-list-wrapper');
-            var scrollTo = jQuery(
+              var container = jQuery('#location-list-wrapper');
+              var scrollTo = jQuery(
                 '.list-wrapper li')
                 .eq(index);
 
-            container.animate({
+              container.animate({
               scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
             }, 1500);
 
-          };
+            };
           })(gmarker, index));
         markers.push(gmarker);
         map.fitBounds(bounds);
@@ -133,7 +132,6 @@ function filter(element) {
 }
 
 function initMap(lt, lg) {
-  console.log(lt);
   var latlng = {
     lat: lt,
     lng: lg
