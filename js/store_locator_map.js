@@ -119,7 +119,8 @@
   };
 })(jQuery, Drupal, drupalSettings);
 
-function filter(element) {
+function filterValue(element) {
+  'use strict';
   var value = jQuery(element).val();
   jQuery('.list-wrapper li').each(function () {
     if (jQuery(this).text().search(new RegExp(value, 'i')) > -1) {
@@ -132,14 +133,15 @@ function filter(element) {
 }
 
 function initMap(lt, lg) {
+  'use strict';
   var latlng = {
     lat: lt,
     lng: lg
   };
   var map = new google.maps.Map(document.getElementById('map'), {
     center: latlng,
-    'zoom': 18,
-    'mapTypeId': google.maps.MapTypeId.ROADMAP
+    zoom: 18,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
   var marker = new google.maps.Marker({
@@ -157,15 +159,11 @@ function initMap(lt, lg) {
     placeMarker(event.latLng, map);
   });
 
-  google.maps.event.addListener(map, 'mousemove', function (event) {
-    event.latLng.lat() + ', ' + event.latLng.lng();
-  });
-
   function placeMarker(position, map) {
     var marker = new google.maps.Marker({
       position: position,
       map: map
     });
-    map.panTo(position);
+    map.panTo(position, marker);
   }
 }
