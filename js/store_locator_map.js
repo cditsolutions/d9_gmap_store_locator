@@ -4,7 +4,8 @@
  */
 
 (function ($, Drupal, drupalSettings) {
-  "use strict";
+  'use strict';
+
   /**
    * Attaches the Store Locator Behaviour.
    */
@@ -20,8 +21,10 @@
         initMap(parseFloat(lt), parseFloat(lg));
       };
 
-      var markers = new Array();
-      var map, gmarker, content;
+      var markers = [];
+      var map;
+      var gmarker;
+      var content;
       var bounds = new google.maps.LatLngBounds();
 
       var mapOptions = {
@@ -34,9 +37,9 @@
       map = new google.maps.Map(document.getElementById('map'),
       mapOptions);
       map.setTilt(45);
-      var infoWindow = new google.maps.InfoWindow(),
-        key;
-      var check = jQuery(this);
+      var infoWindow = new google.maps.InfoWindow();
+      //key;
+      jQuery(this);
       jQuery.each(
       data,
 
@@ -56,7 +59,7 @@
         google.maps.event.addListener(
         gmarker,
           'click', (function (gmarker, index) {
-          return function () {
+            return function () {
             content = '';
             jQuery.each(
             marker,
@@ -64,9 +67,9 @@
             function (
             key,
             value) {
-              if (value != null && key !== 'latitude' && key !== 'longitude') {
+              if (value !== null && key !== 'latitude' && key !== 'longitude') {
 
-                if (key == 'website') {
+                if (key === 'website') {
                   var web = '<a href="' + value + '" target="_blank">' + value + '</a>';
                   content += '<div class="loc-' + key + '">' + web + '</div>';
                 }
@@ -80,26 +83,26 @@
             infoWindow.open(map, gmarker);
 
             jQuery(
-              ".list-wrapper li")
+              '.list-wrapper li')
               .removeClass(
               'highlight');
             jQuery(
-              ".list-wrapper li")
+              '.list-wrapper li')
               .eq(index)
               .addClass(
               'highlight');
 
-            var container = jQuery('#location-list-wrapper'),
-              scrollTo = jQuery(
-                ".list-wrapper li")
+            var container = jQuery('#location-list-wrapper');
+            var scrollTo = jQuery(
+                '.list-wrapper li')
                 .eq(index);
 
             container.animate({
               scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
             }, 1500);
 
-          }
-        })(gmarker, index));
+          };
+          })(gmarker, index));
         markers.push(gmarker);
         map.fitBounds(bounds);
       });
@@ -119,8 +122,8 @@
 
 function filter(element) {
   var value = jQuery(element).val();
-  jQuery(".list-wrapper li").each(function () {
-    if (jQuery(this).text().search(new RegExp(value, "i")) > -1) {
+  jQuery('.list-wrapper li').each(function () {
+    if (jQuery(this).text().search(new RegExp(value, 'i')) > -1) {
       jQuery(this).show();
     }
     else {
@@ -143,7 +146,7 @@ function initMap(lt, lg) {
 
   var marker = new google.maps.Marker({
     position: latlng,
-    map: map,
+    map: map
   });
 
   marker.addListener('click', function () {
@@ -154,10 +157,10 @@ function initMap(lt, lg) {
     jQuery("input[name='latitude[0][value]']").val(event.latLng.lat());
     jQuery("input[name='longitude[0][value]']").val(event.latLng.lng());
     placeMarker(event.latLng, map);
-  })
+  });
 
   google.maps.event.addListener(map, 'mousemove', function (event) {
-    var u = event.latLng.lat() + ', ' + event.latLng.lng();
+    event.latLng.lat() + ', ' + event.latLng.lng();
   });
 
   function placeMarker(position, map) {
