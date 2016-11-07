@@ -115,16 +115,16 @@
           'markerid')], 'click');
       });
 
-      jQuery('#search-location').on('keyup', function() {
+      jQuery('#search-location').on('keyup', function () {
         var value = jQuery(this).val();
         jQuery('.list-wrapper li').each(function () {
-            if (jQuery(this).text().search(new RegExp(value, 'i')) > -1) {
+          if (jQuery(this).text().search(new RegExp(value, 'i')) > -1) {
               jQuery(this).show();
-            }
-            else {
+          }
+          else {
               jQuery(this).hide();
-            }
-          });
+          }
+        });
       });
     }
   };
