@@ -115,22 +115,20 @@
           'markerid')], 'click');
       });
 
+      jQuery("#search-location").on("keyup", function() {
+        var value = jQuery(this).val();
+          jQuery('.list-wrapper li').each(function () {
+            if (jQuery(this).text().search(new RegExp(value, 'i')) > -1) {
+              jQuery(this).show();
+            }
+            else {
+              jQuery(this).hide();
+            }
+          });
+        });
     }
   };
 })(jQuery, Drupal, drupalSettings);
-
-function filterValue(element) {
-  'use strict';
-  var value = jQuery(element).val();
-  jQuery('.list-wrapper li').each(function () {
-    if (jQuery(this).text().search(new RegExp(value, 'i')) > -1) {
-      jQuery(this).show();
-    }
-    else {
-      jQuery(this).hide();
-    }
-  });
-}
 
 function initMap(lt, lg) {
   'use strict';

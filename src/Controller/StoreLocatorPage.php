@@ -17,7 +17,7 @@ class StoreLocatorPage extends ControllerBase {
     $content['searchitem'] = [
       '#type' => 'textfield',
       '#attributes' => array(
-        'onkeyup' => "filterValue(this);",
+        'id' => array('search-location'),
         'placeholder' => $this->t('Search keyword'),
       ),
     ];
