@@ -119,10 +119,10 @@
         var value = jQuery(this).val();
         jQuery('.list-wrapper li').each(function () {
           if (jQuery(this).text().search(new RegExp(value, 'i')) > -1) {
-              jQuery(this).show();
+            jQuery(this).show();
           }
           else {
-              jQuery(this).hide();
+            jQuery(this).hide();
           }
         });
       });
