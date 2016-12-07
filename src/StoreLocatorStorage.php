@@ -21,7 +21,7 @@ class StoreLocatorStorage {
    * @return object
    *   An object containing the loaded entries if found.
    */
-  public static function getAvailableFields($items = array()) {
+  public static function getAvailableFields(array $items) {
     $entity_type = $bundle = 'store_locator';
     $get_list = \Drupal::entityManager()->getFieldDefinitions($entity_type, $bundle);
 
@@ -64,7 +64,7 @@ class StoreLocatorStorage {
   /**
    * Load the data in list & infowindow.
    *
-   * @param array $type
+   * @param string $type
    *   Available types 'infowindow' & 'list'
    *   Get all the associated values from the 'store_locator' table.
    *

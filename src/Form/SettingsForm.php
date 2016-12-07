@@ -7,6 +7,10 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\store_locator\StoreLocatorStorage;
 use Drupal\file\Entity\File;
 use Drupal\Core\Url;
+use Drupal\file\FileUsage\DatabaseFileUsageBackend;
+use Drupal\Core\Image\ImageFactory;
+use Drupal\Core\Utility\LinkGenerator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class SettingsForm.
@@ -14,6 +18,38 @@ use Drupal\Core\Url;
  * @package Drupal\store_locator\Form
  */
 class SettingsForm extends ConfigFormBase {
+
+  /**
+   * The path alias manager.
+   *
+   * @var \Drupal\Core\Path\AliasManagerInterface
+   */
+  protected $db_file_usage;
+  protected $image_factory;
+  protected $link_generator;
+
+  /**
+   * Constructs a MyModuleController object.
+   *
+   * @param \Drupal\Core\Path\AliasManagerInterface $alias_manager
+   *   The path alias manager.
+   */
+  public function __construct(DatabaseFileUsageBackend $db_file_usage, ImageFactory $image_factory, LinkGenerator $link_generator) {
+    $this->db_file_usage = $db_file_usage;
+    $this->image_factory = $image_factory;
+    $this->link_generator = $link_generator;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('file.usage'),
+      $container->get('image.factory'),
+      $container->get('link_generator')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -36,6 +72,7 @@ class SettingsForm extends ConfigFormBase {
     $google_api = Url::fromUri('https://developers.google.com/maps/documentation/javascript/get-api-key', [
       'attributes' => ['target' => '_blank'],
     ]);
+    $api_link = $this->link_generator->generate($this->t('Click here'), $google_api);
 
     $config = $this->config('store_locator.settings');
     $marker = $config->get('marker');
@@ -85,7 +122,7 @@ class SettingsForm extends ConfigFormBase {
       '#required' => TRUE,
       '#default_value' => $config->get('api_key'),
       '#description' => $this->t('A free API key is needed to use the Google Maps. @click here to generate the API key', array(
-        '@click' => \Drupal::l(t('Click here'), $google_api),
+        '@click' => $api_link,
       )),
     );
     $form = SettingsForm::mapSettings($form, $form_state, 'infowindow');
@@ -215,7 +252,7 @@ class SettingsForm extends ConfigFormBase {
       if (!empty($values['width']) && !empty($values['height'])) {
         $fid = current($values['icon']);
         $file = File::load($fid);
-        $image = \Drupal::service('image.factory')->get($file->getFileUri());
+        $image = $this->image_factory->get($file->getFileUri());
         if ($image->isValid()) {
           if ($image->getWidth() > $values['width'] || $image->getHeight() > $values['height']) {
             $form_state->setErrorByName($values['width'], $this->t('Uploaded Image having @width x @height px which is not matching with the specified Width & Height.', array(
@@ -237,8 +274,7 @@ class SettingsForm extends ConfigFormBase {
     if (!empty($values['icon'])) {
       $fid = current($values['icon']);
       $file = File::load($fid);
-      $file_usage = \Drupal::service('file.usage');
-      $file_usage->add($file, 'store_locator', 'module', 1);
+      $this->db_file_usage->add($file, 'store_locator', 'module', 1);
       $file->save();
     }
     $this->config('store_locator.settings')->set('marker', $fid)->save();
