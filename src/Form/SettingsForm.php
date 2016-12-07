@@ -20,24 +20,40 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SettingsForm extends ConfigFormBase {
 
   /**
-   * The path alias manager.
+   * The file usage service variable.
    *
-   * @var \Drupal\Core\Path\AliasManagerInterface
+   * @var \Drupal\file\FileUsage\DatabaseFileUsageBackend
    */
-  protected $db_file_usage;
-  protected $image_factory;
-  protected $link_generator;
+  protected $dbFileUsage;
 
   /**
-   * Constructs a MyModuleController object.
+   * The image factory service variable.
    *
-   * @param \Drupal\Core\Path\AliasManagerInterface $alias_manager
-   *   The path alias manager.
+   * @var \Drupal\Core\Image\ImageFactory
+   */
+  protected $imageFactory;
+
+  /**
+   * The link generator service variable.
+   *
+   * @var \Drupal\Core\Utility\LinkGenerator
+   */
+  protected $linkGenerator;
+
+  /**
+   * Constructs DatabaseFileUsageBackend, ImageFactory & LinkGenerator object.
+   *
+   * @param \Drupal\file\FileUsage\DatabaseFileUsageBackend $db_file_usage
+   *   Database file usage service.
+   * @param \Drupal\Core\Image\ImageFactory $image_factory
+   *   Image Factory Service.
+   * @param \Drupal\Core\Utility\LinkGenerator $link_generator
+   *   Link Generator Service.
    */
   public function __construct(DatabaseFileUsageBackend $db_file_usage, ImageFactory $image_factory, LinkGenerator $link_generator) {
-    $this->db_file_usage = $db_file_usage;
-    $this->image_factory = $image_factory;
-    $this->link_generator = $link_generator;
+    $this->dbFileUsage = $db_file_usage;
+    $this->imageFactory = $image_factory;
+    $this->linkGenerator = $link_generator;
   }
 
   /**
@@ -72,7 +88,7 @@ class SettingsForm extends ConfigFormBase {
     $google_api = Url::fromUri('https://developers.google.com/maps/documentation/javascript/get-api-key', [
       'attributes' => ['target' => '_blank'],
     ]);
-    $api_link = $this->link_generator->generate($this->t('Click here'), $google_api);
+    $api_link = $this->linkGenerator->generate($this->t('Click here'), $google_api);
 
     $config = $this->config('store_locator.settings');
     $marker = $config->get('marker');
@@ -252,7 +268,7 @@ class SettingsForm extends ConfigFormBase {
       if (!empty($values['width']) && !empty($values['height'])) {
         $fid = current($values['icon']);
         $file = File::load($fid);
-        $image = $this->image_factory->get($file->getFileUri());
+        $image = $this->imageFactory->get($file->getFileUri());
         if ($image->isValid()) {
           if ($image->getWidth() > $values['width'] || $image->getHeight() > $values['height']) {
             $form_state->setErrorByName($values['width'], $this->t('Uploaded Image having @width x @height px which is not matching with the specified Width & Height.', array(
@@ -274,7 +290,7 @@ class SettingsForm extends ConfigFormBase {
     if (!empty($values['icon'])) {
       $fid = current($values['icon']);
       $file = File::load($fid);
-      $this->db_file_usage->add($file, 'store_locator', 'module', 1);
+      $this->dbFileUsage->add($file, 'store_locator', 'module', 1);
       $file->save();
     }
     $this->config('store_locator.settings')->set('marker', $fid)->save();
