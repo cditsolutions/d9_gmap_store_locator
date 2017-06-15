@@ -28,9 +28,9 @@ class StoreLocatorSettingsForm extends FormBase {
    * Form submission handler.
    *
    * @param array $form
-   *          An associative array containing the structure of the form.
+   *   An associative array containing the structure of the form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *          The current state of the form.
+   *   The current state of the form.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Empty implementation of the abstract submit class.
@@ -40,9 +40,9 @@ class StoreLocatorSettingsForm extends FormBase {
    * Defines the settings form for Store locator entities.
    *
    * @param array $form
-   *          An associative array containing the structure of the form.
+   *   An associative array containing the structure of the form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *          The current state of the form.
+   *   The current state of the form.
    *
    * @return array
    *   Form definition array.

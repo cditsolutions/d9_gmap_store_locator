@@ -37,7 +37,7 @@ class StoreLocatorHtmlRouteProvider extends AdminHtmlRouteProvider {
    * Gets the collection route.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *          The entity type.
+   *   The entity type.
    *
    * @return route
    *   \Symfony\Component\Routing\Route|null The generated route, if available.
@@ -59,7 +59,7 @@ class StoreLocatorHtmlRouteProvider extends AdminHtmlRouteProvider {
    * Gets the settings form route.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *          The entity type.
+   *   The entity type.
    *
    * @return route
    *   \Symfony\Component\Routing\Route|null The generated route, if available.

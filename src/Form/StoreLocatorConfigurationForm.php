@@ -4,7 +4,7 @@ namespace Drupal\store_locator\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\store_locator\StoreLocatorStorage;
+use Drupal\store_locator\Helper\LocationDataHelper;
 use Drupal\file\Entity\File;
 use Drupal\Core\Url;
 use Drupal\file\FileUsage\DatabaseFileUsageBackend;
@@ -13,11 +13,11 @@ use Drupal\Core\Utility\LinkGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class SettingsForm.
+ * Class StoreLocatorConfigurationForm.
  *
  * @package Drupal\store_locator\Form
  */
-class SettingsForm extends ConfigFormBase {
+class StoreLocatorConfigurationForm extends ConfigFormBase {
 
   /**
    * The file usage service variable.
@@ -92,64 +92,60 @@ class SettingsForm extends ConfigFormBase {
 
     $config = $this->config('store_locator.settings');
     $marker = $config->get('marker');
-    $form['marker'] = array(
+    $form['marker'] = [
       '#type' => 'details',
       '#title' => $this->t('Add Marker'),
       '#open' => TRUE,
-    );
-    $form['marker']['icon'] = array(
+    ];
+    $form['marker']['icon'] = [
       '#type' => 'managed_file',
       '#title' => $this->t('Marker Icon'),
       '#description' => $this->t('Supported formats are: gif png jpg jpeg'),
-      '#upload_validators' => array(
-        'file_validate_extensions' => array('gif png jpg jpeg'),
-        'file_validate_size' => array(500000),
-      ),
-      '#default_value' => $marker ? array($marker) : NULL,
+      '#upload_validators' => [
+        'file_validate_extensions' => ['gif png jpg jpeg'],
+        'file_validate_size' => [500000],
+      ],
+      '#default_value' => $marker ? [$marker] : NULL,
       '#upload_location' => 'public://marker',
-    );
+    ];
 
-    $form['marker']['width'] = array(
-      '#type' => 'textfield',
+    $form['marker']['width'] = [
+      '#type' => 'number',
       '#title' => $this->t('Max Width'),
-      '#size' => 10,
-      '#maxlength' => 3,
       '#default_value' => !empty($config->get('marker_width')) ? $config->get('marker_width') : '25',
       '#description' => $this->t('Enter the width in <em>px</em>'),
-    );
-    $form['marker']['height'] = array(
-      '#type' => 'textfield',
+    ];
+    $form['marker']['height'] = [
+      '#type' => 'number',
       '#title' => $this->t('Max Height'),
-      '#size' => 10,
-      '#maxlength' => 3,
       '#default_value' => !empty($config->get('marker_height')) ? $config->get('marker_height') : '35',
       '#description' => $this->t('Enter the height in <em>px</em>'),
-    );
+    ];
 
-    $form['map_api'] = array(
+    $form['map_api'] = [
       '#type' => 'details',
       '#title' => $this->t('Google Map API'),
       '#open' => TRUE,
-    );
-    $form['map_api']['api_key'] = array(
+    ];
+    $form['map_api']['api_key'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Google Maps API Key'),
       '#size' => 60,
       '#required' => TRUE,
       '#default_value' => $config->get('api_key'),
-      '#description' => $this->t('A free API key is needed to use the Google Maps. @click here to generate the API key', array(
+      '#description' => $this->t('A free API key is needed to use the Google Maps. @click here to generate the API key', [
         '@click' => $api_link,
-      )),
-    );
-    $form = SettingsForm::mapSettings($form, $form_state, 'infowindow');
-    $form = SettingsForm::mapSettings($form, $form_state, 'list');
+      ]),
+    ];
+    $form = StoreLocatorConfigurationForm::mapSettings($form, $form_state, 'infowindow');
+    $form = StoreLocatorConfigurationForm::mapSettings($form, $form_state, 'list');
 
-    $form['message'] = array(
+    $form['message'] = [
       '#type' => 'details',
       '#title' => $this->t('Label & Message'),
       '#open' => TRUE,
-    );
-    $form['message']['store_label'] = array(
+    ];
+    $form['message']['store_label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Locator Title'),
       '#size' => 60,
@@ -157,34 +153,36 @@ class SettingsForm extends ConfigFormBase {
       '#required' => TRUE,
       '#default_value' => $config->get('title'),
       '#description' => $this->t('Title will be display in <em>store-locator</em> page.'),
-    );
-    $form['message']['store_text'] = array(
+    ];
+    $form['message']['store_text'] = [
       '#type' => 'textarea',
       '#title' => $this->t('No Record Message'),
       '#rows' => 3,
       '#required' => TRUE,
       '#default_value' => $config->get('message'),
       '#description' => $this->t('Message will be diplay when no record added in store locator page.'),
-    );
+    ];
 
-    $form['style'] = array(
+    $form['style'] = [
       '#type' => 'details',
-      '#title' => $this->t('Logo Style'),
+      '#title' => $this->t('InfoWindow Image Style'),
       '#open' => TRUE,
-    );
-    $form['style']['logo'] = array(
+    ];
+    $form['style']['logo'] = [
       '#type' => 'select',
       '#title' => $this->t('Available Styles'),
-      '#options' => StoreLocatorStorage::getAvailableStyle(),
+      '#options' => LocationDataHelper::getAvailableStyle(),
       '#default_value' => !empty($config->get('logo_style')) ? $config->get('logo_style') : 'thumbnail',
       '#description' => $this->t('Select logo style to apply in map infowindow'),
-    );
+    ];
 
     return parent::buildForm($form, $form_state);
   }
 
   /**
    * Generate the List data.
+   *
+   * @see buildForm()
    */
   public function mapSettings(array &$form, FormStateInterface $form_state, $type) {
     $config = $this->config('store_locator.settings');
@@ -194,54 +192,62 @@ class SettingsForm extends ConfigFormBase {
       $field_name = 'setting_infowindow';
       $field_title = $this->t('Select the field to display in infowindow.');
       $items = $config->get('infowindow');
-      $results = StoreLocatorStorage::getAvailableFields($items);
+      $direction = $config->get('infowindow_direction');
+      $results = LocationDataHelper::getAvailableFields($items);
     }
     else {
       $lbl = $this->t('Map List Fields');
       $field_name = 'setting_list';
       $field_title = $this->t('Select the field to display in list.');
       $items = $config->get('list');
-      $results = StoreLocatorStorage::getAvailableFields($items);
+      $direction = $config->get('list_direction');
+      $results = LocationDataHelper::getAvailableFields($items);
     }
 
-    $form[$type] = array(
+    $form[$type] = [
       '#type' => 'details',
       '#title' => $lbl,
       '#description' => $field_title,
       '#open' => TRUE,
-    );
-    $form[$type][$field_name] = array(
+    ];
+    $form[$type][$field_name . '_direction'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Add Get Direction Link.'),
+      '#default_value' => !empty($direction) ? TRUE : FALSE,
+    ];
+    $form[$type][$field_name] = [
       '#type' => 'table',
-      '#header' => array(
+      '#header' => [
         $this->t('Order'),
         $this->t('Status'),
         $this->t('Weight'),
-      ),
+      ],
       '#tableselect' => FALSE,
-      '#tabledrag' => array(
-        array(
+      '#tabledrag' => [
+        [
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'map-field-order-weight',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
+
     foreach ($results as $key => $value) {
       $form[$type][$field_name][$key]['#attributes']['class'][] = 'draggable';
-      $form[$type][$field_name][$key]['id'] = array(
+      $form[$type][$field_name][$key]['id'] = [
         '#plain_text' => $value[$key],
-      );
+      ];
 
-      $form[$type][$field_name][$key][$key] = array(
+      $form[$type][$field_name][$key][$key] = [
         '#type' => 'checkbox',
-        '#default_value' => !empty($value['weight']) ? TRUE : FALSE,
-      );
+        '#default_value' => !empty($value['#weight']) ? TRUE : FALSE,
+      ];
 
-      $form[$type][$field_name][$key]['weight'] = array(
+      $form[$type][$field_name][$key]['weight'] = [
         '#type' => 'weight',
-        '#default_value' => $value['weight'],
-        '#attributes' => array('class' => array('map-field-order-weight')),
-      );
+        '#default_value' => $value['#weight'],
+        '#attributes' => ['class' => ['map-field-order-weight']],
+      ];
     }
     return $form;
   }
@@ -271,10 +277,10 @@ class SettingsForm extends ConfigFormBase {
         $image = $this->imageFactory->get($file->getFileUri());
         if ($image->isValid()) {
           if ($image->getWidth() > $values['width'] || $image->getHeight() > $values['height']) {
-            $form_state->setErrorByName($values['width'], $this->t('Uploaded Image having @width x @height px which is not matching with the specified Width & Height.', array(
+            $form_state->setErrorByName($values['width'], $this->t('Uploaded Image having @width x @height px which is not matching with the specified Width & Height.', [
               '@width' => $image->getWidth(),
               '@height' => $image->getHeight(),
-            )));
+            ]));
           }
         }
       }
@@ -285,23 +291,24 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
     $fid = NULL;
-    if (!empty($values['icon'])) {
-      $fid = current($values['icon']);
+    if (!empty($form_state->getValue('icon'))) {
+      $fid = current($form_state->getValue('icon'));
       $file = File::load($fid);
       $this->dbFileUsage->add($file, 'store_locator', 'module', 1);
       $file->save();
     }
     $this->config('store_locator.settings')->set('marker', $fid)->save();
-    $this->config('store_locator.settings')->set('marker_width', $values['width'])->save();
-    $this->config('store_locator.settings')->set('marker_height', $values['height'])->save();
-    $this->config('store_locator.settings')->set('api_key', $values['api_key'])->save();
-    $this->config('store_locator.settings')->set('infowindow', $values['setting_infowindow'])->save();
-    $this->config('store_locator.settings')->set('list', $values['setting_list'])->save();
-    $this->config('store_locator.settings')->set('title', $values['store_label'])->save();
-    $this->config('store_locator.settings')->set('message', $values['store_text'])->save();
-    $this->config('store_locator.settings')->set('logo_style', $values['logo'])->save();
+    $this->config('store_locator.settings')->set('marker_width', $form_state->getValue('width'))->save();
+    $this->config('store_locator.settings')->set('marker_height', $form_state->getValue('height'))->save();
+    $this->config('store_locator.settings')->set('api_key', $form_state->getValue('api_key'))->save();
+    $this->config('store_locator.settings')->set('infowindow', $form_state->getValue('setting_infowindow'))->save();
+    $this->config('store_locator.settings')->set('infowindow_direction', $form_state->getValue('setting_infowindow_direction'))->save();
+    $this->config('store_locator.settings')->set('list', $form_state->getValue('setting_list'))->save();
+    $this->config('store_locator.settings')->set('list_direction', $form_state->getValue('setting_list_direction'))->save();
+    $this->config('store_locator.settings')->set('title', $form_state->getValue('store_label'))->save();
+    $this->config('store_locator.settings')->set('message', $form_state->getValue('store_text'))->save();
+    $this->config('store_locator.settings')->set('logo_style', $form_state->getValue('logo'))->save();
     parent::submitForm($form, $form_state);
   }
 

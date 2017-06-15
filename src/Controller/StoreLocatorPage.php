@@ -13,19 +13,19 @@ class StoreLocatorPage extends ControllerBase {
    * Render a list and Map.
    */
   public function page() {
-    $content = array();
+    $content = [];
     $content['searchitem'] = [
       '#type' => 'textfield',
-      '#attributes' => array(
-        'id' => array('search-location'),
+      '#attributes' => [
+        'id' => ['search-location'],
         'placeholder' => $this->t('Search keyword'),
-      ),
+      ],
     ];
     // Preprocesses the Results.
-    return array(
+    return [
       '#theme' => 'location_data',
-      '#location_data_var' => $content,
-    );
+      '#location_search' => $content,
+    ];
   }
 
 }

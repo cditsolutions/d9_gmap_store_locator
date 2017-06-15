@@ -4,49 +4,84 @@ namespace Drupal\store_locator\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\store_locator\Services\GeocoderConsumerService;
+use Drupal\store_locator\Helper\GoogleApiKeyHelper;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\AlertCommand;
-use Drupal\store_locator\Geocode\GeostoreConsumer;
 
 /**
- * Form controller for Store locator edit forms.
+ * Store locator Add/Edit forms.
  *
  * @ingroup store_locator
  */
 class StoreLocatorForm extends ContentEntityForm {
 
   /**
+   * The Geocoder service variable.
+   *
+   * @var \Drupal\store_locator\Services\GeocoderConsumerService
+   */
+  protected $geoCoder;
+
+  /**
+   * Constructs Storage & prepare data object.
+   *
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   Entity Manager Interface.
+   * @param \Drupal\store_locator\Services\GeocoderConsumerService $geoCoder
+   *   Google Geocode Consumer Service.
+   */
+  public function __construct(EntityManagerInterface $entity_manager, GeocoderConsumerService $geoCoder) {
+    parent::__construct($entity_manager);
+    $this->geoCoder = $geoCoder;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+        $container->get('entity.manager'),
+        $container->get('store_locator.geocodes')
+    );
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $country_code = \Drupal::config('system.date')->get('country.default');
+
     $form = parent::buildForm($form, $form_state);
-    $form['add'] = [
+    $form['finder'] = [
       '#type' => 'button',
-      '#value' => $this->t('Calculate Lat/Long'),
+      '#value' => $this->t('Find Lat/Long'),
+      '#weight' => 90,
       '#ajax' => [
-        'callback' => '::ajaxContentSubmitForm',
+        'callback' => '::getGeocodes',
         'event' => 'click',
       ],
-      '#prefix' => '<div id="add-button-wrapper">',
-      '#suffix' => '</div>',
     ];
-    $form['gmap'] = array(
+    $form['gmap'] = [
       '#type' => 'container',
       '#weight' => 90,
       '#prefix' => '<div id="map">',
       '#suffix' => '</div>',
-    );
-    $lat = $form['latitude']['widget'][0]['value']['#default_value'];
-    $lng = $form['longitude']['widget'][0]['value']['#default_value'];
-    if (!empty($lat) || !empty($lng)) {
-      $lat_lng = array('lat' => (float) $lat, 'lng' => (float) $lng);
+    ];
+    if (isset($country_code) && !empty($country_code)) {
+      $data = $this->geoCoder->geoLatLong($country_code);
+      $form['default_map'] = [
+        '#type' => 'hidden',
+        '#default_value' => implode(',', $data),
+      ];
     }
-    else {
-      $lat_lng = array('lat' => (float) 19.1586639, 'lng' => (float) 72.994035);
-    }
-    $form['#attached']['drupalSettings']['store_locator']['latlng'] = $lat_lng;
     $form['#attached']['library'][] = 'store_locator/store_locator.page';
+    $googleMapKey = GoogleApiKeyHelper::getGoogleApiKey();
+    $form['#attached']['html_head'][] = [$googleMapKey, 'googleMapKey'];
+
     return $form;
   }
 
@@ -55,6 +90,15 @@ class StoreLocatorForm extends ContentEntityForm {
    */
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
+    $lat = is_numeric($entity->get('latitude')->value) ? $entity->get('latitude')->value : NULL;
+    $lng = is_numeric($entity->get('longitude')->value) ? $entity->get('longitude')->value : NULL;
+
+    if (empty($lat) || empty($lng)) {
+      $address = $entity->get('city')->value . ' ' . $entity->get('address_one')->value . ' ' . $entity->get('postcode')->value;
+      $data = $this->geoCoder->geoLatLong($address);
+      $entity->latitude->setValue($data['latitude']);
+      $entity->longitude->setValue($data['longitude']);
+    }
     $status = parent::save($form, $form_state);
 
     switch ($status) {
@@ -76,8 +120,10 @@ class StoreLocatorForm extends ContentEntityForm {
 
   /**
    * Get the Latitude & Longitude of the entered location.
+   *
+   * @see buildForm()
    */
-  public function ajaxContentSubmitForm(array &$form, FormStateInterface $form_state) {
+  public function getGeocodes(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
     $values = $form_state->getValues();
 
@@ -87,23 +133,22 @@ class StoreLocatorForm extends ContentEntityForm {
     $postcode = $values['postcode'][0]['value'];
 
     if (empty($city) && empty($address_one) && empty($postcode)) {
-      $response->addCommand(new AlertCommand(t('Enter the city or address one or postcode.')));
+      $response->addCommand(new AlertCommand($this->t('Enter the city or address one or postcode.')));
       return $response;
     }
     $address = "$city $address_one $address_two $postcode";
-    $data = GeostoreConsumer::geoLatLong($address);
-
-    $response->addCommand(new InvokeCommand("input[name='latitude[0][value]']", 'val', array(
+    $data = $this->geoCoder->geoLatLong($address);
+    $response->addCommand(new InvokeCommand("input[name='latitude[0][value]']", 'val', [
       $data['latitude'],
-    )));
-    $response->addCommand(new InvokeCommand("input[name='longitude[0][value]']", 'val', array(
+    ]));
+    $response->addCommand(new InvokeCommand("input[name='longitude[0][value]']", 'val', [
       $data['longitude'],
-    )));
-    $response->addCommand(new InvokeCommand('', 'init_map', array(
+    ]));
+    $response->addCommand(new InvokeCommand('', 'init_map', [
       $data['latitude'],
       $data['longitude'],
-    )));
-
+    ]));
+    $form_state->setRebuild();
     return $response;
   }
 

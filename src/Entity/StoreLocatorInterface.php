@@ -25,7 +25,7 @@ interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInt
    * Sets the Store locator name.
    *
    * @param string $name
-   *          The Store locator name.
+   *   The Store locator name.
    *
    * @return string
    *   \Drupal\store_locator\Entity\StoreLocatorInterface called
@@ -45,7 +45,7 @@ interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInt
    * Sets the Store locator creation timestamp.
    *
    * @param int $timestamp
-   *          The Store locator creation timestamp.
+   *   The Store locator creation timestamp.
    *
    * @return string
    *   \Drupal\store_locator\Entity\StoreLocatorInterface
@@ -67,7 +67,7 @@ interface StoreLocatorInterface extends ContentEntityInterface, EntityChangedInt
    * Sets the published status of a Store locator.
    *
    * @param bool $published
-   *          TRUE to set this Store locator to published,
+   *   TRUE to set this Store locator to published,
    *          FALSE to set it to unpublished.
    *
    * @return string

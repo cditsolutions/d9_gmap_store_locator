@@ -60,7 +60,7 @@ class StoreLocator extends ContentEntityBase implements StoreLocatorInterface {
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
-    $values += array('user_id' => \Drupal::currentUser()->id());
+    $values += ['user_id' => \Drupal::currentUser()->id()];
   }
 
   /**
@@ -153,83 +153,83 @@ class StoreLocator extends ContentEntityBase implements StoreLocatorInterface {
     // Name field for the contact.
     // We set display options for the view as well as the form.
     // Users with correct privileges can change the view and edit configuration.
-    $fields['name'] = BaseFieldDefinition::create('string')->setLabel(t('Name'))->setRequired(TRUE)->setDescription(t('Enter the name'))->setSettings(array(
+    $fields['name'] = BaseFieldDefinition::create('string')->setLabel(t('Name'))->setRequired(TRUE)->setDescription(t('Enter the name'))->setSettings([
       'default_value' => '',
       'max_length' => 255,
       'text_processing' => 0,
-    ))->setDisplayOptions('view', array(
+    ])->setDisplayOptions('view', [
       'label' => 'above',
       'type' => 'string',
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'string_textfield',
       'weight' => -10,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['city'] = BaseFieldDefinition::create('string')->setLabel(t('City'))->setRequired(TRUE)->setDescription(t('Enter the city name'))->setSettings(array(
+    $fields['city'] = BaseFieldDefinition::create('string')->setLabel(t('City'))->setRequired(TRUE)->setDescription(t('Enter the city name'))->setSettings([
       'default_value' => '',
       'max_length' => 32,
       'text_processing' => 0,
-    ))->setDisplayOptions('view', array(
+    ])->setDisplayOptions('view', [
       'label' => 'above',
       'type' => 'string',
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'string_textfield',
       'weight' => -9,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['address_one'] = BaseFieldDefinition::create('string')->setLabel(t('Address One'))->setRequired(TRUE)->setDescription(t('Enter the address one detail.'))->setSettings(array(
+    $fields['address_one'] = BaseFieldDefinition::create('string')->setLabel(t('Address One'))->setRequired(TRUE)->setDescription(t('Enter the address one detail.'))->setSettings([
       'default_value' => '',
       'max_length' => 255,
       'text_processing' => 0,
-    ))->setDisplayOptions('view', array(
+    ])->setDisplayOptions('view', [
       'label' => 'above',
       'type' => 'string',
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'string_textfield',
       'weight' => -8,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['address_two'] = BaseFieldDefinition::create('string')->setLabel(t('Address Two'))->setDescription(t('Enter the address two detail.'))->setSettings(array(
+    $fields['address_two'] = BaseFieldDefinition::create('string')->setLabel(t('Address Two'))->setDescription(t('Enter the address two detail.'))->setSettings([
       'default_value' => '',
       'max_length' => 255,
       'text_processing' => 0,
-    ))->setDisplayOptions('view', array(
+    ])->setDisplayOptions('view', [
       'label' => 'above',
       'type' => 'string',
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'string_textfield',
       'weight' => -7,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['postcode'] = BaseFieldDefinition::create('string')->setLabel(t('Postcode'))->setRequired(TRUE)->setDescription(t('Enter the postcode'))->setSettings(array(
+    $fields['postcode'] = BaseFieldDefinition::create('string')->setLabel(t('Postcode'))->setRequired(TRUE)->setDescription(t('Enter the postcode'))->setSettings([
       'default_value' => '',
       'max_length' => 20,
       'text_processing' => 0,
-    ))->setDisplayOptions('view', array(
+    ])->setDisplayOptions('view', [
       'label' => 'above',
       'type' => 'string',
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'string_textfield',
       'weight' => -6,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['website'] = BaseFieldDefinition::create('uri')->setLabel(t('Website URL'))->setDescription(t('Enter Website URL'))->setSettings(array(
+    $fields['website'] = BaseFieldDefinition::create('uri')->setLabel(t('Website URL'))->setDescription(t('Enter Website URL'))->setSettings([
       'default_value' => '',
       'max_length' => 255,
       'text_processing' => 0,
-    ))->setDisplayOptions('view', array(
+    ])->setDisplayOptions('view', [
       'label' => 'above',
       'type' => 'string',
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'uri',
       'weight' => -5,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['logo'] = BaseFieldDefinition::create('image')->setLabel(t('Logo'))->setDescription(t('Upload logo'))->setSettings(array(
+    $fields['logo'] = BaseFieldDefinition::create('image')->setLabel(t('Logo'))->setDescription(t('Upload logo'))->setSettings([
       'alt_field' => 0,
       'alt_field_required' => 0,
       'text_processing' => 0,
-    ))->setDisplayOptions('view', [
+    ])->setDisplayOptions('view', [
       'label' => 'above',
       'type' => 'image',
     ])->setDisplayOptions('form', [
@@ -237,23 +237,23 @@ class StoreLocator extends ContentEntityBase implements StoreLocatorInterface {
       'weight' => -4,
     ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['latitude'] = BaseFieldDefinition::create('string')->setLabel(t('Latitude'))->setRequired(TRUE)->setSettings(array(
+    $fields['latitude'] = BaseFieldDefinition::create('string')->setLabel(t('Latitude'))->setSettings([
       'default_value' => '',
       'max_length' => 32,
       'text_processing' => 0,
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'string_textfield',
-      'weight' => -2,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+      'weight' => 90,
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
-    $fields['longitude'] = BaseFieldDefinition::create('string')->setLabel(t('Longitude'))->setRequired(TRUE)->setSettings(array(
+    $fields['longitude'] = BaseFieldDefinition::create('string')->setLabel(t('Longitude'))->setSettings([
       'default_value' => '',
       'max_length' => 32,
       'text_processing' => 0,
-    ))->setDisplayOptions('form', array(
+    ])->setDisplayOptions('form', [
       'type' => 'string_textfield',
-      'weight' => -1,
-    ))->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
+      'weight' => 90,
+    ])->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')->setLabel(t('User Name'))->setDescription(t('The Name of the associated user.'))->setSetting('target_type', 'user')->setSetting('handler', 'default')->setDisplayConfigurable('form', TRUE)->setDisplayConfigurable('view', TRUE);
 
