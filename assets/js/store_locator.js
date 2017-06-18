@@ -11,13 +11,13 @@
    */
   Drupal.behaviors.storeLocatorMap = {
     attach: function (context, settings) {
-      // Intialize map on Entity View mode
+      // Initialize map on Entity View mode
       if (typeof drupalSettings.store_locator != 'undefined') {
         var lt = drupalSettings.store_locator.latlng.lat;
         var lg = drupalSettings.store_locator.latlng.lng;
         initMap(lt, lg);
       }
-      // Intialize map on Store Locator Page
+      // Initialize map on Store Locator Page
       if (typeof drupalSettings.locator != 'undefined') {
         var data = drupalSettings.locator;
         initStoreLocatorMap(data);
@@ -47,7 +47,7 @@ jQuery(document).ready(function () {
   }
 });
 
-// Intialize map on Entity Add/Edit mode
+// Initialize map on Entity Add/Edit mode
 jQuery.fn.init_map = function (lt, lg) {
   'use strict';
   initMap(parseFloat(lt), parseFloat(lg));

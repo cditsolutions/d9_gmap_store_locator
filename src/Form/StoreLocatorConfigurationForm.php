@@ -5,12 +5,12 @@ namespace Drupal\store_locator\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\store_locator\Helper\LocationDataHelper;
-use Drupal\file\Entity\File;
-use Drupal\Core\Url;
 use Drupal\file\FileUsage\DatabaseFileUsageBackend;
 use Drupal\Core\Image\ImageFactory;
 use Drupal\Core\Utility\LinkGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Url;
 
 /**
  * Class StoreLocatorConfigurationForm.
@@ -18,7 +18,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\store_locator\Form
  */
 class StoreLocatorConfigurationForm extends ConfigFormBase {
-
+  /**
+   * The file storage service variable.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $fileStorage;
   /**
    * The file usage service variable.
    *
@@ -49,11 +54,14 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
    *   Image Factory Service.
    * @param \Drupal\Core\Utility\LinkGenerator $link_generator
    *   Link Generator Service.
+   * @param \Drupal\Core\Entity\EntityStorageInterface $file_storage
+   *   File Storage Service.
    */
-  public function __construct(DatabaseFileUsageBackend $db_file_usage, ImageFactory $image_factory, LinkGenerator $link_generator) {
+  public function __construct(DatabaseFileUsageBackend $db_file_usage, ImageFactory $image_factory, LinkGenerator $link_generator, EntityStorageInterface $file_storage) {
     $this->dbFileUsage = $db_file_usage;
     $this->imageFactory = $image_factory;
     $this->linkGenerator = $link_generator;
+    $this->fileStorage = $file_storage;
   }
 
   /**
@@ -63,7 +71,8 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
     return new static(
       $container->get('file.usage'),
       $container->get('image.factory'),
-      $container->get('link_generator')
+      $container->get('link_generator'),
+      $container->get('entity.manager')->getStorage('file')
     );
   }
 
@@ -273,7 +282,7 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
     if (isset($values['icon']) && !empty($values['icon'])) {
       if (!empty($values['width']) && !empty($values['height'])) {
         $fid = current($values['icon']);
-        $file = File::load($fid);
+        $file = $this->fileStorage->load($fid);
         $image = $this->imageFactory->get($file->getFileUri());
         if ($image->isValid()) {
           if ($image->getWidth() > $values['width'] || $image->getHeight() > $values['height']) {
@@ -294,7 +303,7 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
     $fid = NULL;
     if (!empty($form_state->getValue('icon'))) {
       $fid = current($form_state->getValue('icon'));
-      $file = File::load($fid);
+      $file = $this->fileStorage->load($fid);
       $this->dbFileUsage->add($file, 'store_locator', 'module', 1);
       $file->save();
     }

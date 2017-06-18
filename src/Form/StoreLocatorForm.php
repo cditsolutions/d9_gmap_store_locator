@@ -5,6 +5,7 @@ namespace Drupal\store_locator\Form;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Locale\CountryManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\store_locator\Services\GeocoderConsumerService;
 use Drupal\store_locator\Helper\GoogleApiKeyHelper;
@@ -18,7 +19,6 @@ use Drupal\Core\Ajax\AlertCommand;
  * @ingroup store_locator
  */
 class StoreLocatorForm extends ContentEntityForm {
-
   /**
    * The Geocoder service variable.
    *
@@ -27,16 +27,26 @@ class StoreLocatorForm extends ContentEntityForm {
   protected $geoCoder;
 
   /**
+   * The country manager.
+   *
+   * @var \Drupal\Core\Locale\CountryManagerInterface
+   */
+  protected $countryManager;
+
+  /**
    * Constructs Storage & prepare data object.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   Entity Manager Interface.
    * @param \Drupal\store_locator\Services\GeocoderConsumerService $geoCoder
    *   Google Geocode Consumer Service.
+   * @param \Drupal\store_locator\Services\CountryManagerInterface $country_manager
+   *   Country Manager Service.
    */
-  public function __construct(EntityManagerInterface $entity_manager, GeocoderConsumerService $geoCoder) {
+  public function __construct(EntityManagerInterface $entity_manager, GeocoderConsumerService $geoCoder, CountryManagerInterface $country_manager) {
     parent::__construct($entity_manager);
     $this->geoCoder = $geoCoder;
+    $this->countryManager = $country_manager;
   }
 
   /**
@@ -45,7 +55,8 @@ class StoreLocatorForm extends ContentEntityForm {
   public static function create(ContainerInterface $container) {
     return new static(
         $container->get('entity.manager'),
-        $container->get('store_locator.geocodes')
+        $container->get('store_locator.geocodes'),
+        $container->get('country_manager')
     );
   }
 
@@ -53,8 +64,7 @@ class StoreLocatorForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $country_code = \Drupal::config('system.date')->get('country.default');
-
+    $country_code = $this->config('system.date')->get('country.default');
     $form = parent::buildForm($form, $form_state);
     $form['finder'] = [
       '#type' => 'button',
