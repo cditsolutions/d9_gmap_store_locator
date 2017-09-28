@@ -1,5 +1,5 @@
-SUMMARY - Store Locator
-========================
+Introduction - Store Locator
+===========================
 Store Locator module provides a simple way to add the stores and display them
 in google map with configurable InfoWindow & List.
 

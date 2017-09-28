@@ -121,13 +121,13 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
     $form['marker']['width'] = [
       '#type' => 'number',
       '#title' => $this->t('Max Width'),
-      '#default_value' => !empty($config->get('marker_width')) ? $config->get('marker_width') : '25',
+      '#default_value' => $config->get('marker_width') ? $config->get('marker_width') : '25',
       '#description' => $this->t('Enter the width in <em>px</em>'),
     ];
     $form['marker']['height'] = [
       '#type' => 'number',
       '#title' => $this->t('Max Height'),
-      '#default_value' => !empty($config->get('marker_height')) ? $config->get('marker_height') : '35',
+      '#default_value' => $config->get('marker_height') ? $config->get('marker_height') : '35',
       '#description' => $this->t('Enter the height in <em>px</em>'),
     ];
 
