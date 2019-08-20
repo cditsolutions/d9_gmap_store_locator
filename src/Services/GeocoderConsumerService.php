@@ -53,13 +53,15 @@ class GeocoderConsumerService {
   public function geoLatLong($address) {
     $language_interface = $this->languageManager->getCurrentLanguage();
     $language = isset($language_interface) ? $language_interface->getId() : 'en';
+    $config = \Drupal::config('store_locator.settings');
 
     $query = [
+      'key' => $config->get('api_key'),
       'address' => $address,
       'language' => $language,
       'sensor' => 'false',
     ];
-    $uri = 'http://maps.googleapis.com/maps/api/geocode/json';
+    $uri = 'https://maps.googleapis.com/maps/api/geocode/json';
 
     $response = $this->httpClient->request('GET', $uri, [
       'query' => $query,
