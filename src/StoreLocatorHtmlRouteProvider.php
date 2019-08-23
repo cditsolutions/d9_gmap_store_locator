@@ -49,7 +49,7 @@ class StoreLocatorHtmlRouteProvider extends AdminHtmlRouteProvider {
       $route->setDefaults([
         '_entity_list' => $entity_type_id,
         '_title' => "{$entity_type->getLabel()} list",
-      ])->setRequirement('_permission', 'view store locator entities')->setOption('_admin_route', TRUE);
+      ])->setRequirement('_permission', 'view store locator list')->setOption('_admin_route', TRUE);
 
       return $route;
     }

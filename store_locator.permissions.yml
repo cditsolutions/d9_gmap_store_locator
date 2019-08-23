@@ -21,3 +21,6 @@ view published store locator entities:
 
 view unpublished store locator entities:
   title: 'View unpublished Store locator'
+
+view store locator list:
+  title: 'View Store locator list'
