@@ -3,9 +3,10 @@
 namespace Drupal\store_locator\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Locale\CountryManagerInterface;
+use Drupal\Core\Messenger\Messenger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\store_locator\Services\GeocoderConsumerService;
 use Drupal\store_locator\Helper\GoogleApiKeyHelper;
@@ -19,6 +20,7 @@ use Drupal\Core\Ajax\AlertCommand;
  * @ingroup store_locator
  */
 class StoreLocatorForm extends ContentEntityForm {
+
   /**
    * The Geocoder service variable.
    *
@@ -36,17 +38,20 @@ class StoreLocatorForm extends ContentEntityForm {
   /**
    * Constructs Storage & prepare data object.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_manager
    *   Entity Manager Interface.
    * @param \Drupal\store_locator\Services\GeocoderConsumerService $geoCoder
    *   Google Geocode Consumer Service.
-   * @param \Drupal\store_locator\Services\CountryManagerInterface $country_manager
+   * @param \Drupal\Core\Locale\CountryManagerInterface $country_manager
    *   Country Manager Service.
+   * @param \Drupal\Core\Messenger\Messenger $messenger
+   *   Messenger Service.
    */
-  public function __construct(EntityManagerInterface $entity_manager, GeocoderConsumerService $geoCoder, CountryManagerInterface $country_manager) {
+  public function __construct(EntityRepositoryInterface $entity_manager, GeocoderConsumerService $geoCoder, CountryManagerInterface $country_manager, Messenger $messenger) {
     parent::__construct($entity_manager);
     $this->geoCoder = $geoCoder;
     $this->countryManager = $country_manager;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -54,9 +59,10 @@ class StoreLocatorForm extends ContentEntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-        $container->get('entity.manager'),
-        $container->get('store_locator.geocodes'),
-        $container->get('country_manager')
+      $container->get('entity.manager'),
+      $container->get('store_locator.geocodes'),
+      $container->get('country_manager'),
+      $container->get('messenger')
     );
   }
 
@@ -113,13 +119,13 @@ class StoreLocatorForm extends ContentEntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        drupal_set_message($this->t('Created the %label Store locator.', [
+        $this->messenger->addMessage($this->t('Created the %label Store locator.', [
           '%label' => $entity->label(),
         ]));
         break;
 
       default:
-        drupal_set_message($this->t('Saved the %label Store locator.', [
+        $this->messenger->addMessage($this->t('Saved the %label Store locator.', [
           '%label' => $entity->label(),
         ]));
     }

@@ -4,7 +4,7 @@ namespace Drupal\store_locator;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
-use Drupal\Core\Routing\LinkGeneratorTrait;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 
 /**
@@ -13,8 +13,6 @@ use Drupal\Core\Url;
  * @ingroup store_locator
  */
 class StoreLocatorListBuilder extends EntityListBuilder {
-
-  use LinkGeneratorTrait;
 
   /**
    * {@inheritdoc}
@@ -32,7 +30,7 @@ class StoreLocatorListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\store_locator\Entity\StoreLocator */
-    $row['name'] = $this->l($entity->label(), new Url('entity.store_locator.canonical', [
+    $row['name'] = Link::fromTextAndUrl($entity->label(), new Url('entity.store_locator.canonical', [
       'store_locator' => $entity->id(),
     ]));
     $row['city'] = $entity->get('city')->value;

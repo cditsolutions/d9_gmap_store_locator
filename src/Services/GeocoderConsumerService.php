@@ -2,9 +2,11 @@
 
 namespace Drupal\store_locator\Services;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use GuzzleHttp\ClientInterface;
 use Drupal\Component\Serialization\Json;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines the GeocoderConsumerService service, for return parse GeoJson.
@@ -26,19 +28,41 @@ class GeocoderConsumerService {
   protected $languageManager;
 
   /**
+   * Config Factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private $configFactory;
+
+  /**
    * Service constructor.
    *
    * @param \GuzzleHttp\ClientInterface $http_client
    *   The http client.
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
    *   The language manager.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory.
    */
   public function __construct(
       ClientInterface $http_client,
-      LanguageManagerInterface $language_manager
+      LanguageManagerInterface $language_manager,
+      ConfigFactoryInterface $config_factory
   ) {
     $this->httpClient = $http_client;
     $this->languageManager = $language_manager;
+    $this->configFactory = $config_factory;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('http_client'),
+      $container->get('language_manager'),
+      $container->get('config.factory')
+    );
   }
 
   /**
@@ -53,7 +77,8 @@ class GeocoderConsumerService {
   public function geoLatLong($address) {
     $language_interface = $this->languageManager->getCurrentLanguage();
     $language = isset($language_interface) ? $language_interface->getId() : 'en';
-    $config = \Drupal::config('store_locator.settings');
+    $config = $this->configFactory->getEditable('store_locator.settings');
+    $geocodes = ['latitude' => '', 'longitude' => ''];
 
     $query = [
       'key' => $config->get('api_key'),

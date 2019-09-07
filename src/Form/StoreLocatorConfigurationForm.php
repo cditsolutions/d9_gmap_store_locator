@@ -2,6 +2,7 @@
 
 namespace Drupal\store_locator\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\store_locator\Helper\LocationDataHelper;
@@ -46,6 +47,13 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
   protected $linkGenerator;
 
   /**
+   * The config service variable.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private $config;
+
+  /**
    * Constructs DatabaseFileUsageBackend, ImageFactory & LinkGenerator object.
    *
    * @param \Drupal\file\FileUsage\DatabaseFileUsageBackend $db_file_usage
@@ -56,12 +64,16 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
    *   Link Generator Service.
    * @param \Drupal\Core\Entity\EntityStorageInterface $file_storage
    *   File Storage Service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   Config Factory Service.
    */
-  public function __construct(DatabaseFileUsageBackend $db_file_usage, ImageFactory $image_factory, LinkGenerator $link_generator, EntityStorageInterface $file_storage) {
+  public function __construct(DatabaseFileUsageBackend $db_file_usage, ImageFactory $image_factory, LinkGenerator $link_generator, EntityStorageInterface $file_storage, ConfigFactoryInterface $config_factory) {
+    parent::__construct($config_factory);
     $this->dbFileUsage = $db_file_usage;
     $this->imageFactory = $image_factory;
     $this->linkGenerator = $link_generator;
     $this->fileStorage = $file_storage;
+    $this->config = $config_factory;
   }
 
   /**
@@ -72,7 +84,8 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
       $container->get('file.usage'),
       $container->get('image.factory'),
       $container->get('link_generator'),
-      $container->get('entity.manager')->getStorage('file')
+      $container->get('entity.manager')->getStorage('file'),
+      $container->get('config.factory')
     );
   }
 

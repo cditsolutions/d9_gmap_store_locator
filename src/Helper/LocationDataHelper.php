@@ -18,12 +18,12 @@ class LocationDataHelper {
    *   An array containing all the fields used to search the entries in the
    *   'store_locator' table.
    *
-   * @return object
+   * @return array
    *   An object containing the loaded entries if found.
    */
   public static function getAvailableFields(array $items) {
     $entity_type = $bundle = 'store_locator';
-    $get_list = \Drupal::entityManager()->getFieldDefinitions($entity_type, $bundle);
+    $get_list = \Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle);
 
     $available_fields = $filter_array = [];
     if (!empty($items)) {
@@ -33,7 +33,7 @@ class LocationDataHelper {
         $available_fields[$key]['#weight'] = $value[$key];
       }
 
-      foreach (\Drupal::entityManager()->getFieldDefinitions($entity_type, $bundle) as $field_name => $field_definition) {
+      foreach (\Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle) as $field_name => $field_definition) {
         if (!empty($field_definition->getTargetBundle()) && !in_array($field_name, $filter_array)) {
           $available_fields[$field_name][$field_name] = $get_list[$field_name]->getLabel();
           $available_fields[$field_name]['#weight'] = 0;
@@ -68,14 +68,17 @@ class LocationDataHelper {
    *   Available types 'infowindow' & 'list'
    *   Get all the associated values from the 'store_locator' table.
    *
-   * @return object
+   * @return array
    *   An object containing the field information.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public static function loadInfowindow($type = NULL) {
     $location_data = $item_list = $filter_array = [];
     $entity_type = $bundle = 'store_locator';
     $results = \Drupal::entityTypeManager()->getStorage('store_locator')->loadByProperties(['status' => 1]);
-    $field_type = \Drupal::entityManager()->getFieldDefinitions($entity_type, $bundle);
+    $field_type = \Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle);
     $extra_field_type = ['email', 'telephone'];
     $api_key = \Drupal::config('store_locator.settings')->get($type);
 
@@ -120,6 +123,8 @@ class LocationDataHelper {
       }
       $item_list[] = $location_data;
     }
+
+    $marker_path = '';
     if ($type == 'infowindow') {
       $fid = \Drupal::config('store_locator.settings')->get('marker');
       if (!empty($fid)) {
