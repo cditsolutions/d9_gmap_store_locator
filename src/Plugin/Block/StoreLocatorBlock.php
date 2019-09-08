@@ -24,8 +24,7 @@ class StoreLocatorBlock extends BlockBase {
     $content['map'] = ['#markup' => '<div id="map" class="loc-map block-map-view"></div>'];
     $location_data = LocationDataHelper::loadInfowindow('infowindow');
     $googleMapKey = GoogleApiKeyHelper::getGoogleApiKey();
-    $content['#attached']['drupalSettings']['locator']['data'] = $location_data['itemlist'];
-    $content['#attached']['drupalSettings']['locator']['markericon'] = $location_data['marker'];
+    $content['#attached']['drupalSettings']['locator'] = $location_data;
     $content['#attached']['library'][] = 'store_locator/store_locator.page';
     $content['#attached']['html_head'][] = [$googleMapKey, 'googleMapKey'];
 

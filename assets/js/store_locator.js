@@ -15,7 +15,8 @@
       if (typeof drupalSettings.store_locator != 'undefined') {
         var lt = drupalSettings.store_locator.latlng.lat;
         var lg = drupalSettings.store_locator.latlng.lng;
-        initMap(lt, lg);
+        var icon = drupalSettings.store_locator.icon;
+        initMap(lt, lg, icon);
       }
       // Initialize map on Store Locator Page
       if (typeof drupalSettings.locator != 'undefined') {
@@ -28,9 +29,9 @@
   };
 })(jQuery, Drupal, drupalSettings);
 
-  /**
-   * Add Javascript when DOM is ready.
-   */
+/**
+ * Add Javascript when DOM is ready.
+ */
 jQuery(document).ready(function () {
   'use strict';
   var lt = jQuery("input[name='latitude[0][value]']").val();
@@ -53,14 +54,14 @@ jQuery.fn.init_map = function (lt, lg) {
   initMap(parseFloat(lt), parseFloat(lg));
 };
 
-  /**
-   * Initialize location map & list.
-   *
-   * @param {Object} data
-   *   InfoWindow Data.
-   * @param {Url} marker_icon
-   *   Custom Marker Icon.
-   */
+/**
+ * Initialize location map & list.
+ *
+ * @param {Object} data
+ *   InfoWindow Data.
+ * @param {Url} marker_icon
+ *   Custom Marker Icon.
+ */
 function initStoreLocatorMap(data) {
   'use strict';
   var markers = [];
@@ -74,90 +75,92 @@ function initStoreLocatorMap(data) {
   };
 
   map = new google.maps.Map(document.getElementById('map'),
-      mapOptions);
+    mapOptions);
   map.setTilt(45);
   var infoWindow = new google.maps.InfoWindow();
   jQuery(this);
+
   jQuery.each(
-      data.itemlist,
+    data.itemlist,
 
-      function (index, marker) {
-        var position = new google.maps.LatLng(
+    function (index, marker) {
+
+      var position = new google.maps.LatLng(
         marker.latitude, marker.longitude);
-        bounds.extend(position);
-        gmarker = new google.maps.Marker({
-          position: position,
-          map: map,
-          id: index,
-          title: marker.name,
-          icon: data.marker.icon,
-          animation: google.maps.Animation.DROP
-        });
+      bounds.extend(position);
+      gmarker = new google.maps.Marker({
+        position: position,
+        map: map,
+        id: index,
+        title: marker.name,
+        icon: data.marker.icon,
+        animation: google.maps.Animation.DROP
+      });
 
-        google.maps.event.addListener(
+      google.maps.event.addListener(
         gmarker,
-          'click', (function (gmarker, index) {
-            return function () {
-              content = '';
-              jQuery.each(
-            marker,
+        'click', (function (gmarker, index) {
+          return function () {
+            content = '';
+            jQuery.each(
+              marker,
 
-            function (
-            key,
-            value) {
-              if (value !== null && key !== 'latitude' && key !== 'longitude') {
+              function (
+                key,
+                value) {
+                if (value !== null && key !== 'latitude' && key !== 'longitude') {
 
-                if (key === 'website') {
-                  var web = '<a href="' + value + '" target="_blank">' + value + '</a>';
-                  content += '<div class="loc-' + key + '">' + web + '</div>';
-                }
-                else if (key === 'get_direction') {
-                  if (data.get_direction === 1) {
+                  if (key === 'website') {
+                    var web = '<a href="' + value + '" target="_blank">' + value + '</a>';
+                    content += '<div class="loc-' + key + '">' + web + '</div>';
+                  }
+                  else if (key === 'get_direction') {
+                    if (data.get_direction === 1) {
+                      content += '<div class="loc-' + key + '">' + value + '</div>';
+                    }
+                  }
+                  else {
                     content += '<div class="loc-' + key + '">' + value + '</div>';
                   }
                 }
-                else {
-                  content += '<div class="loc-' + key + '">' + value + '</div>';
-                }
-              }
-            });
+              });
 
-              infoWindow.setContent(content);
-              infoWindow.open(map, gmarker);
-              if (!jQuery('.bh-sl-map').hasClass('block-map-view')) {
-                jQuery(
-              '.list-wrapper li')
-              .removeClass(
-              'highlight');
-                jQuery(
-              '.list-wrapper li')
-              .eq(index)
-              .addClass(
-              'highlight');
+            infoWindow.setContent(content);
+            infoWindow.open(map, gmarker);
+            if (!jQuery('.bh-sl-map').hasClass('block-map-view')) {
+              jQuery(
+                '.list-wrapper li')
+                .removeClass(
+                  'highlight');
+              jQuery(
+                '.list-wrapper li')
+                .eq(index)
+                .addClass(
+                  'highlight');
 
-                var container = jQuery('#location-list-wrapper');
-                var scrollTo = jQuery(
+              var container = jQuery('#location-list-wrapper');
+              var scrollTo = jQuery(
                 '.list-wrapper li')
                 .eq(index);
 
-                container.animate({
-                  scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
-                }, 1500);
-              }
-            };
-          })(gmarker, index));
-        markers.push(gmarker);
-        map.fitBounds(bounds);
-      });
+              container.animate({
+                scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+              }, 1500);
+            }
+          };
+        })(gmarker, index));
+      markers.push(gmarker);
+      map.fitBounds(bounds);
+    });
 
   jQuery('.list-marker-id').on(
-        'click',
+    'click',
 
-      function (event) {
-        event.preventDefault();
-        google.maps.event.trigger(markers[jQuery(this).data(
-          'markerid')], 'click');
-      });
+    function (event) {
+      event.preventDefault();
+      google.maps.event.trigger(markers[jQuery(this).data(
+        'markerid')], 'click');
+    });
 
   jQuery('#search-location').on('keyup', function () {
     var value = jQuery(this).val();
@@ -172,15 +175,15 @@ function initStoreLocatorMap(data) {
   });
 }
 
-  /**
-   * Initialize map based on Latitude & Longitude.
-   *
-   * @param {float} lt
-   *   Latitude.
-   * @param {float} lg
-   *   Longitude.
-   */
-function initMap(lt, lg) {
+/**
+ * Initialize map based on Latitude & Longitude.
+ *
+ * @param {float} lt
+ *   Latitude.
+ * @param {float} lg
+ *   Longitude.
+ */
+function initMap(lt, lg, icon) {
   'use strict';
   var latlng = {
     lat: lt,
@@ -194,7 +197,9 @@ function initMap(lt, lg) {
 
   var marker = new google.maps.Marker({
     position: latlng,
-    map: map
+    map: map,
+    icon: icon,
+    animation: google.maps.Animation.DROP
   });
 
   marker.addListener('click', function () {
@@ -210,13 +215,13 @@ function initMap(lt, lg) {
 }
 
 /**
-   * Place Marker on Click on Map.
-   *
-   * @param {Object} position
-   *   Marker position in Map.
-   * @param {Object} map
-   *   map Object.
-   */
+ * Place Marker on Click on Map.
+ *
+ * @param {Object} position
+ *   Marker position in Map.
+ * @param {Object} map
+ *   map Object.
+ */
 function placeMarker(position, map) {
   'use strict';
   var marker = new google.maps.Marker({
