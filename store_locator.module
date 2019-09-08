@@ -30,12 +30,16 @@ function store_locator_theme($existing, $type, $theme, $path) {
 function store_locator_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   if ($build['#view_mode'] == 'full' && !empty($build['name']['#object'])) {
     $fid = \Drupal::config('store_locator.settings')->get('marker');
-    $file_entity = File::load($fid);
+    $icon_url = '';
+    if (!is_null($fid)) {
+      $file_entity = File::load($fid);
+      $icon_url = file_create_url($file_entity->getFileUri());
+    }
     $lat = $build['name']['#object']->get('latitude')->value;
     $lng = $build['name']['#object']->get('longitude')->value;
     $lat_lng = ['lat' => (float) $lat, 'lng' => (float) $lng];
     $build['#attached']['drupalSettings']['store_locator']['latlng'] = $lat_lng;
-    $build['#attached']['drupalSettings']['store_locator']['icon'] = file_create_url($file_entity->getFileUri());;
+    $build['#attached']['drupalSettings']['store_locator']['icon'] = $icon_url;
     $build['map']['#markup'] = '<div id="map" class="loc-map store-locator-page-view"></div>';
     $build['map']['#weight'] = 100;
     $build['#attached']['library'][] = 'store_locator/store_locator.page';
