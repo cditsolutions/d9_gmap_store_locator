@@ -19,6 +19,7 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Store locator"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
+ *     "views_data" = "Drupal\store_locator\StoreLocatorViewsData",
  *     "list_builder" = "Drupal\store_locator\StoreLocatorListBuilder",
  *     "form" = {
  *       "default" = "Drupal\store_locator\Form\StoreLocatorForm",
