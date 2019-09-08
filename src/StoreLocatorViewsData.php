@@ -5,7 +5,7 @@ namespace Drupal\store_locator;
 use Drupal\views\EntityViewsData;
 
 /**
- * Provides the views data for the node entity type.
+ * Provides the views data for the store locator entity type.
  */
 class StoreLocatorViewsData extends EntityViewsData {
 
