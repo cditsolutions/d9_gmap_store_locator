@@ -28,7 +28,7 @@ function store_locator_theme($existing, $type, $theme, $path) {
  * Implements hook_entity_view_alter().
  */
 function store_locator_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
-  if ($build['#view_mode'] == 'full' && !empty($build['name']['#object'])) {
+  if ($entity->getEntityTypeId() == 'store_locator' && $build['#view_mode'] == 'full' && !empty($build['name']['#object'])) {
     $fid = \Drupal::config('store_locator.settings')->get('marker');
     $icon_url = '';
     if (!is_null($fid)) {
