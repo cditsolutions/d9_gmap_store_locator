@@ -4,6 +4,8 @@ namespace Drupal\store_locator\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Messenger\Messenger;
@@ -47,8 +49,10 @@ class StoreLocatorForm extends ContentEntityForm {
    * @param \Drupal\Core\Messenger\Messenger $messenger
    *   Messenger Service.
    */
-  public function __construct(EntityRepositoryInterface $entity_manager, GeocoderConsumerService $geoCoder, CountryManagerInterface $country_manager, Messenger $messenger) {
-    parent::__construct($entity_manager);
+  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_bundle_info,
+    TimeInterface $time, GeocoderConsumerService $geoCoder,
+    CountryManagerInterface $country_manager, Messenger $messenger) {
+    parent::__construct($entity_repository, $entity_bundle_info, $time);
     $this->geoCoder = $geoCoder;
     $this->countryManager = $country_manager;
     $this->messenger = $messenger;
@@ -59,7 +63,9 @@ class StoreLocatorForm extends ContentEntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
+      $container->get('entity.repository'),
+      $container->get('entity_type.bundle.info'),
+      $container->get('datetime.time'),
       $container->get('store_locator.geocodes'),
       $container->get('country_manager'),
       $container->get('messenger')

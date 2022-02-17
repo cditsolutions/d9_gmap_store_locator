@@ -84,7 +84,7 @@ class StoreLocatorConfigurationForm extends ConfigFormBase {
       $container->get('file.usage'),
       $container->get('image.factory'),
       $container->get('link_generator'),
-      $container->get('entity.manager')->getStorage('file'),
+      $container->get('entity_type.manager')->getStorage('file'),
       $container->get('config.factory')
     );
   }
